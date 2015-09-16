@@ -20,5 +20,10 @@
   "bugs": {
     "url": "https://github.com/ducdigital/gulp-sentry-release/issues"
   },
-  "homepage": "https://github.com/ducdigital/gulp-sentry-release"
+  "homepage": "https://github.com/ducdigital/gulp-sentry-release",
+  "dependencies": {
+    "gulp-util": "^3.0.6",
+    "request": "^2.62.0",
+    "through2": "^2.0.0"
+  }
 }
