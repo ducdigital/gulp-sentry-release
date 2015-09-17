@@ -74,6 +74,9 @@ module.exports = function (packageFile, opt) {
 		var ver = v || version;
 		var init = function (cb) {
 			sentryAPI.create(ver, function (err, res, body){
+				if (err) {
+					gutil.log(err);
+				}
 				if (res.statusCode >= 400) {
 					gutil.log('Version existed: ' + ver);
 				} else {
@@ -87,6 +90,9 @@ module.exports = function (packageFile, opt) {
 
 		var processFile = function (file, cb) {
 			sentryAPI.upload(ver, file, function (err, res, body){
+				if (err) {
+					gutil.log(err);
+				}
 				var errMsg = "";
 
 				if (res.statusCode >= 400) {
@@ -137,15 +143,10 @@ module.exports = function (packageFile, opt) {
 			// Pass through
 			return cb(null, file);
 		}, function (cb) {
-			request.del({
-				uri: API_URL+version+'/',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				auth: {
-					user: API_KEY
+			sentryAPI.delete(version, function (err, res, body){
+				if (err) {
+					gutil.log(err);
 				}
-			}, function (err, res, body){
 				if (res.statusCode === 404) {
 					throw new PluginError("gulp-sentry-release.deleteVersion(version)", "Server return error 404: Version not found. " + body);
 				}
@@ -166,18 +167,10 @@ module.exports = function (packageFile, opt) {
 			// Pass through
 			return cb(null, file);
 		}, function (cb) {
-			request.post({
-				uri: API_URL,
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				auth: {
-					user: API_KEY
-				},
-				form: {
-					version: version
+			sentryAPI.create(version, function (err, res, body){
+				if (err) {
+					gutil.log(err);
 				}
-			}, function (err, res, body){
 				if (res.statusCode >= 400) {
 					throw new PluginError("gulp-sentry-release.deleteVersion(version)", "Version existed. " + body);
 				}
