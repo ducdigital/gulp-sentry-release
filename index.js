@@ -160,7 +160,7 @@ module.exports = function (packageFile, opt) {
 	***************************************************************************/
 	var createVersion = function (version) {
 		if (!version) {
-			throw new PluginError("gulp-sentry-release.deleteVersion(version)", "Require version to create");
+			throw new PluginError("gulp-sentry-release.createVersion(version)", "Require version to create");
 		}
 
 		return through.obj(function (file, enc, cb) {
@@ -172,7 +172,7 @@ module.exports = function (packageFile, opt) {
 					gutil.log(err);
 				}
 				if (res.statusCode >= 400) {
-					throw new PluginError("gulp-sentry-release.deleteVersion(version)", "Version existed. " + body);
+					throw new PluginError("gulp-sentry-release.createVersion(version)", "Version existed. " + body);
 				}
 				gutil.log('Created version: ' + version);
 				cb();

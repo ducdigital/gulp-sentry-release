@@ -46,7 +46,7 @@ var sentrySrc = [
 gulp.task('sentry:release', function () {
 	var version = gutil.env.version || gutil.env.v;
 	return gulp.src(sentrySrc, { base: './path/to/public' })
-	.pipe(sentryRelease.release());
+	.pipe(sentryRelease.release(version));
 });
 
 /*
