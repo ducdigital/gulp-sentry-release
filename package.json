@@ -1,6 +1,6 @@
 {
   "name": "gulp-sentry-release",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Upload file using Hosted Sentry API to create a release base on package.json version number",
   "main": "index.js",
   "scripts": {
