@@ -1,6 +1,7 @@
 var through      = require('through2');
 var fs           = require('fs');
 var request      = require('request');
+var slash        = require('slash');
 var gutil        = require('gulp-util');
 var PluginError  = gutil.PluginError;
 
@@ -61,7 +62,7 @@ module.exports = function (packageFile, opt) {
 				},
 				formData: {
 					file:  fs.createReadStream(file.path),
-					name: (!!opt.DOMAIN ? opt.DOMAIN : '') + '/' + file.relative
+					name: (!!opt.DOMAIN ? opt.DOMAIN : '') + '/' + slash(file.relative)
 				}
 			}, cb);
 		}
