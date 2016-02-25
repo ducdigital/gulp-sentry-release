@@ -2,11 +2,11 @@
 
 [![NPM](https://nodei.co/npm/gulp-sentry-release.png?compact=true)](https://nodei.co/npm/gulp-sentry-release/)
 
-gulp-sentry-release facillitate the process of upload your sourcemaps / min files to sentry.
-Also it provide an easy way to create and delete your version.
+gulp-sentry-release facilitates the process of uploading your sourcemaps / min files to sentry.
+Also it provides an easy way to create and delete your version.
 
 ## Why use it
-Pain in the ass using curl to upload file.
+It's a pain in the ass using curl to upload a file.
 
 ## Install
 ```
@@ -30,7 +30,7 @@ var opt = {
 var sentryRelease = require('gulp-sentry-release')('./package.json', opt);
 ```
 
-## Some gulp task you can use
+## Some gulp tasks you can use
 
 ```js
 var gutil = require('gulp-util');
@@ -55,7 +55,6 @@ gulp.task('sentry:release', function () {
  */
 gulp.task('sentry:delete', function () {
 	var version = gutil.env.version || gutil.env.v;
-	return gulp.src(sentrySrc, { base: './path/to/public' })
 	.pipe(sentryRelease.deleteVersion(version));
 });
 
@@ -72,14 +71,14 @@ gulp.task('sentry:create', function () {
 
 ## API
 ### `sentryRelease.release(version)`
-Pipe all your file stream and upload it to sentry
-Leave blank version will use package.json version
+Pipe all your file streams and upload it to sentry
+When version is left blank, it will use the package.json version instead
 
 ### `sentryRelease.deleteVersion(version)`
 Delete a version
 
 ### `sentryRelease.createVersion(version)`
-Delete a version
+Create a version
 
 ### `sentryRelease.sentryAPI`
 Sentry API Request Wrapper
@@ -92,5 +91,5 @@ Sentry API Request Wrapper
 If you think it would make sense to add some features/methods don't hesitate to fork and
 make pull requests.
 
-## Licence
+## License
 Distributed under the MIT License.
