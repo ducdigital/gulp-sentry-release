@@ -32,7 +32,7 @@ module.exports = function (packageFile, opt) {
 					'Content-Type': 'application/json'
 				},
 				auth: {
-					user: API_KEY
+					bearer: API_KEY
 				},
 				form: {
 					version: version
@@ -46,7 +46,7 @@ module.exports = function (packageFile, opt) {
 					'Content-Type': 'application/json'
 				},
 				auth: {
-					user: API_KEY
+					bearer: API_KEY
 				}
 			}, cb);
 		},
@@ -58,7 +58,7 @@ module.exports = function (packageFile, opt) {
 					'Content-Type': 'application/json'
 				},
 				auth: {
-					user: API_KEY
+					bearer: API_KEY
 				},
 				formData: {
 					file:  fs.createReadStream(file.path),
