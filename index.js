@@ -17,7 +17,7 @@ module.exports = function (packageFile, opt) {
 	var packageJSON = JSON.parse(fs.readFileSync(packageFile, 'utf8'));
 	var version = packageJSON.version;
 	var API_URL = opt.API_URL.replace(/\/$/, "") + '/releases/';
-	var API_KEY = opt.API_KEY;
+	var API_KEY = opt.API_KEY || process.env.SENTRY_API_KEY;
 	var streamCount = 0;
 	var failedCount = 0;
 
