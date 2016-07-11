@@ -7,7 +7,7 @@ var PluginError  = gutil.PluginError;
 
 
 module.exports = function (packageFile, opt) {
-	if (!opt || !opt.API_KEY || !opt.API_URL) {
+	if (!opt || !(opt.API_KEY || process.env.SENTRY_API_KEY) || !opt.API_URL) {
 		throw new PluginError("gulp-sentry-release", "Require options API_KEY and API_URL");
 	}
 	if (!!opt.versionPrefix) {
