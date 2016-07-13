@@ -7,7 +7,7 @@ var PluginError  = gutil.PluginError;
 
 
 module.exports = function (packageFile, opt) {
-	if (!opt || !opt.API_KEY || !opt.API_URL) {
+	if (!opt || !(opt.API_KEY || process.env.SENTRY_API_KEY) || !opt.API_URL) {
 		throw new PluginError("gulp-sentry-release", "Require options API_KEY and API_URL");
 	}
 	if (!!opt.versionPrefix) {
@@ -17,7 +17,7 @@ module.exports = function (packageFile, opt) {
 	var packageJSON = JSON.parse(fs.readFileSync(packageFile, 'utf8'));
 	var version = packageJSON.version;
 	var API_URL = opt.API_URL.replace(/\/$/, "") + '/releases/';
-	var API_KEY = opt.API_KEY;
+	var API_KEY = opt.API_KEY || process.env.SENTRY_API_KEY;
 	var streamCount = 0;
 	var failedCount = 0;
 
@@ -32,7 +32,7 @@ module.exports = function (packageFile, opt) {
 					'Content-Type': 'application/json'
 				},
 				auth: {
-					user: API_KEY
+					bearer: API_KEY
 				},
 				form: {
 					version: version
@@ -46,7 +46,7 @@ module.exports = function (packageFile, opt) {
 					'Content-Type': 'application/json'
 				},
 				auth: {
-					user: API_KEY
+					bearer: API_KEY
 				}
 			}, cb);
 		},
@@ -58,7 +58,7 @@ module.exports = function (packageFile, opt) {
 					'Content-Type': 'application/json'
 				},
 				auth: {
-					user: API_KEY
+					bearer: API_KEY
 				},
 				formData: {
 					file:  fs.createReadStream(file.path),

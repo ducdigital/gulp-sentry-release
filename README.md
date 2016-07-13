@@ -30,6 +30,8 @@ var opt = {
 var sentryRelease = require('gulp-sentry-release')('./package.json', opt);
 ```
 
+If `API_KEY` is ommited, global `process.env.SENTRY_API_KEY` is used instead.
+
 ## Some gulp task you can use
 
 ```js
