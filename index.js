@@ -13,19 +13,29 @@ module.exports = function (packageFile, opt) {
 	}
 
 	if (!opt || !opt.API_KEY || !opt.API_URL) {
-		throw new PluginError("gulp-sentry-release", "The API_KEY and API_URL options are required");
-	}
-	if (opt.versionPrefix) {
-		version = opt.versionPrefix + version;
+		throw new PluginError(
+			'gulp-sentry-release',
+			'The API_KEY and API_URL options are required'
+		);
 	}
 
-	var version;
-	if (opt.version) {
-		version = opt.version;
-	} else if (packageFile) {
-		version = JSON.parse(fs.readFileSync(packageFile, 'utf8')).version;
-	} else {
-		throw new PluginError("gulp-sentry-release", "A version string is required");
+	if (!opt.versionPrefix) {
+		opt.versionPrefix = '';
+	}
+
+	var version = opt.versionPrefix + opt.version;;
+
+	if (packageFile) {
+		version =
+			opt.versionPrefix +
+			JSON.parse(fs.readFileSync(packageFile, 'utf8')).version;
+	}
+
+	if (!version) {
+		throw new PluginError(
+			'gulp-sentry-release',
+			'A version string is required'
+		);
 	}
 
 	var API_URL = opt.API_URL.replace(/\/?$/, '/releases/');
@@ -101,7 +111,7 @@ module.exports = function (packageFile, opt) {
 				}
 
 				gutil.log('Starting upload to sentry...');
-				cb();
+				return cb();
 			});
 		};
 
@@ -110,19 +120,21 @@ module.exports = function (packageFile, opt) {
 				if (err) {
 					gutil.log(err);
 				}
-				var errMsg = "";
+
+				var errMsg = '';
 
 				if (res.statusCode >= 400) {
 					failedCount++;
-					errMsg = (res.statusCode === 409) ? "File already exists" : "File upload failed";
+					errMsg = (res.statusCode === 409) ?
+						'File already exists' : 'File upload failed';
 				}
 
 				if (opt.debug) {
-					gutil.log(file.relative + " | " + body + " | " + errMsg);
+					gutil.log(file.relative + ' | ' + body + ' | ' + errMsg);
 				} else {
 					process.stdout.write('.');
 				}
-				cb(null, file);
+				return cb(null, file);
 			});
 
 		};
@@ -140,8 +152,11 @@ module.exports = function (packageFile, opt) {
 
 		var streamEnd = function (cb){
 			gutil.log('Processed ' + streamCount + ' files');
-			gutil.log('In which ' + failedCount + ' files failed to upload or already existed');
-			cb();
+			gutil.log(
+				'In which ' + failedCount +
+				' files failed to upload or already existed'
+			);
+			return cb();
 		};
 
 		return through.obj(streamProcess, streamEnd);
@@ -152,22 +167,31 @@ module.exports = function (packageFile, opt) {
 	***************************************************************************/
 	var deleteVersion = function (version) {
 		if (!version) {
-			throw new PluginError("gulp-sentry-release.deleteVersion(version)", "Requires version to delete");
+			throw new PluginError(
+				'gulp-sentry-release.deleteVersion(version)',
+				'Requires version to delete'
+			);
 		}
 
 		return through.obj(function (file, enc, cb) {
-			// Pass through
+			// Passthrough
 			return cb(null, file);
 		}, function (cb) {
 			sentryAPI.delete(version, function (err, res, body){
 				if (err) {
 					gutil.log(err);
 				}
+
 				if (res.statusCode === 404) {
-					throw new PluginError("gulp-sentry-release.deleteVersion(version)", "Server return error 404: Version not found. " + body);
+					throw new PluginError(
+						'gulp-sentry-release.deleteVersion(version)',
+						'Server return error 404: Version not found. ' + body
+					);
 				}
+
 				gutil.log('Deleted version: ' + version);
-				cb();
+
+				return cb();
 			});
 		});
 	};
@@ -177,22 +201,31 @@ module.exports = function (packageFile, opt) {
 	***************************************************************************/
 	var createVersion = function (version) {
 		if (!version) {
-			throw new PluginError("gulp-sentry-release.createVersion(version)", "Requires version to create");
+			throw new PluginError(
+				'gulp-sentry-release.createVersion(version)',
+				'Requires version to create'
+			);
 		}
 
 		return through.obj(function (file, enc, cb) {
-			// Pass through
+			// Passthrough
 			return cb(null, file);
 		}, function (cb) {
 			sentryAPI.create(version, function (err, res, body){
 				if (err) {
 					gutil.log(err);
 				}
+
 				if (res.statusCode >= 400) {
-					throw new PluginError("gulp-sentry-release.createVersion(version)", "Version already existed. " + body);
+					throw new PluginError(
+						'gulp-sentry-release.createVersion(version)',
+						'Version already existed. ' + body
+					);
 				}
+
 				gutil.log('Created version: ' + version);
-				cb();
+
+				return cb();
 			});
 		});
 	};
