@@ -24,6 +24,7 @@ Include this in your gulp file:
 var opt = {
   // prefix domain in the `name` param when uploading a file. Leave blank to use the path
   // verbatim. Do not include a trailing slash.
+  // Also accepts callback function where filename is passed as single param, must return a string
   DOMAIN: '',
   API_URL: 'https://app.getsentry.com/api/0/projects/ORGANIZATION/PROJECT/',
   API_KEY: 'MY_LONG_API_KEY',
