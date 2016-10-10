@@ -16,7 +16,8 @@ npm install gulp-sentry-release --save-dev
 
 ## How do I use this awesome gulp plugin?
 
-Go to sentry and create an API Key.
+Go to sentry and create an API Token at https://sentry.io/api/.
+The token must have `project:read, project:write, project:releases` permissions
 
 Include this in your gulp file:
 
@@ -26,7 +27,7 @@ var opt = {
   // verbatim. Do not include a trailing slash.
   DOMAIN: '',
   API_URL: 'https://app.getsentry.com/api/0/projects/ORGANIZATION/PROJECT/',
-  API_KEY: 'MY_LONG_API_KEY',
+  API_KEY: 'MY_LONG_AUTH_TOKEN',
   debug: true,
   versionPrefix: '' // Append before the version number in package.json
 }
@@ -37,7 +38,7 @@ var sentryRelease = require('gulp-sentry-release')('./package.json', opt);
 // Specify the version directly.
 var sentryRelease = require('gulp-sentry-release')({
   API_URL: 'https://app.getsentry.com/api/0/projects/ORGANIZATION/PROJECT/',
-  API_KEY: 'MY_LONG_API_KEY',
+  API_KEY: 'MY_LONG_AUTH_TOKEN',
   version: 'v0.1.7' // If specified, uses this version number.
 });
 ```
