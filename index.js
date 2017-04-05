@@ -162,6 +162,15 @@ module.exports = function (packageFile, opt) {
 		return through.obj(streamProcess, streamEnd);
 	};
 
+	var getDetails = function(body) {
+		try {
+			return JSON.parse(body).detail;
+		} catch(e) {
+			// Prevent any problems in the case of response format changing.
+			return body;
+		}
+	};
+
 	/***************************************************************************
 	*  Delete a version
 	***************************************************************************/
@@ -181,6 +190,14 @@ module.exports = function (packageFile, opt) {
 				if (err) {
 					gutil.log(err);
 				}
+
+				if (res.statusCode === 400 || res.statusCode === 401) {
+					throw new PluginError(
+						'gulp-sentry-release.deleteVersion(version)',
+						'Server return error ' + res.statusCode +': ' + getDetails(body)
+					);
+				}
+
 
 				if (res.statusCode === 404) {
 					throw new PluginError(
