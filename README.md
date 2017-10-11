@@ -29,7 +29,10 @@ var opt = {
   API_URL: 'https://app.getsentry.com/api/0/projects/ORGANIZATION/PROJECT/',
   API_KEY: 'MY_LONG_AUTH_TOKEN',
   debug: true,
-  versionPrefix: '' // Append before the version number in package.json
+  versionPrefix: '', // Append before the version number in package.json
+  repository: 'owner-name/repo-name', // optional
+  commit: '2da95dfb052f477380608d59d32b4ab9', // optional
+  previousCommit: '1e6223108647a7bfc040ef0ca5c92f68ff0dd993' // optional
 }
 
 // Pull the version from the package.json file.

@@ -23,6 +23,15 @@ module.exports = function (packageFile, opt) {
 		opt.versionPrefix = '';
 	}
 
+	if (opt.repository) {
+		if (!opt.commit) {
+			throw new PluginError(
+				'gulp-sentry-release',
+				'A commit is required if a repository is specified'
+			)
+		}
+	}
+
 	var version = opt.versionPrefix + opt.version;;
 
 	if (packageFile) {
@@ -38,8 +47,17 @@ module.exports = function (packageFile, opt) {
 		);
 	}
 
-	var API_URL = opt.API_URL.replace(/\/?$/, '/releases/');
-	var API_KEY = opt.API_KEY;
+	// Split the URL and filter the empty strings
+	let splittedUrl = opt.API_ROOT.split("/").filter(str => str);
+
+	const ORGANIZATION = splittedUrl.slice(-2);
+	const PROJECT = splittedUrl.slice(-1);
+	const ROOT = opt.API_ROOT.substr(0, opt.API_ROOT.indexOf("/projects/"));
+
+	const API_PROJECT_URL = opt.API_ROOT.replace(/\/?$/, '/releases/')
+	const API_RELEASE_URL = `${ROOT}/organizations/${ORGANIZATION}/releases/`;
+	const API_KEY = opt.API_KEY;
+
 	var streamCount = 0;
 	var failedCount = 0;
 
@@ -48,22 +66,33 @@ module.exports = function (packageFile, opt) {
 	***************************************************************************/
 	var sentryAPI = {
 		create: function (version, cb) {
+			const form = {
+				version,
+				"projects": [PROJECT]
+			};
+			if (!opt.repository) {
+				form.refs = [{
+					repository: opt.repository,
+					commit: opt.commit
+				}];
+				if (!opt.previousCommit) {
+					form.refs[0].previousCommit = opt.previousCommit;
+				}
+			}
 			return request.post({
-				uri: API_URL,
+				uri: API_RELEASE_URL,
 				headers: {
 					'Content-Type': 'application/json'
 				},
 				auth: {
 					bearer: API_KEY
 				},
-				form: {
-					version: version
-				}
+				form
 			}, cb);
 		},
 		delete: function (version, cb) {
 			return request.del({
-				uri: API_URL + version + '/',
+				uri: API_PROJECT_URL + version + '/',
 				headers: {
 					'Content-Type': 'application/json'
 				},
@@ -74,7 +103,7 @@ module.exports = function (packageFile, opt) {
 		},
 		upload: function (version, file, cb){
 			return request.post({
-				uri: API_URL + version + '/files/',
+				uri: API_PROJECT_URL + version + '/files/',
 				headers: {
 					'Content-Type': 'application/json'
 				},
