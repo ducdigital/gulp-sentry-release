@@ -159,7 +159,14 @@ module.exports = function (packageFile, opt) {
 			return cb();
 		};
 
-		return through.obj(streamProcess, streamEnd);
+    return through(
+      {
+        objectMode: true,
+        highWaterMark: 10000
+      },
+      streamProcess,
+      streamEnd
+    );
 	};
 
 	/***************************************************************************
