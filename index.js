@@ -88,7 +88,7 @@ module.exports = function (packageFile, opt) {
 							filename: file.relative
 						}
 					},
-					name: (opt.DOMAIN || '') + '/' + slash(file.relative)
+					name: (opt.DOMAIN || '~') + '/' + slash(file.relative)
 				}
 			}, cb);
 		}
